@@ -87,7 +87,8 @@ function merge(arena,player){
 const player = {
     pos:{x:0,y:0},
     matrix:null,
-    score:0
+    score:0,
+    game_state:0
 }
 
 const arena = createMatrix(12,20);
@@ -129,16 +130,27 @@ function playerDrop(){
 let last_time = 0;  
 let dropCounter=0;
 let dropInterval=1000;
+var game =document.getElementById('game');
 
 function update(time =0){
-    const delta_time = time-last_time;
-    last_time=time;
-    dropCounter+=delta_time;
-    if(dropCounter>dropInterval){
-        playerDrop();
-    }
+    if(player.game_state==1){
+            
+        const delta_time = time-last_time;
+        last_time=time;
+        dropCounter+=delta_time;
+        if(dropCounter>dropInterval){
+            playerDrop();
+        }
 
-    draw();
+        draw();
+        game.innerText="";
+    }else if(player.game_state==0){
+        context.fillStyle = "#000";
+        context.fillRect(0,0,canvas.width,canvas.height);
+        game.innerText="";
+    }else if(player.game_state==4){
+        game.innerText="Game over!";
+    }
     requestAnimationFrame(update);
 }
 
@@ -148,10 +160,11 @@ function playerReset(){
     player.pos.y=0;
     player.pos.x=(arena[0].length/2|0) - (player.matrix[0].length/2|0);
     if(collide(arena,player)){ 
-        player.score = 0;
-        arena.forEach(row=>row.fill(0));
-        updateScore();
-        alert("Game Over");
+        player.game_state=4;
+        button.innerText="Start";
+
+        button.classList.add("btn-success");
+        button.classList.remove("btn-primary");
     }
 }
 
@@ -209,16 +222,18 @@ const color = [
 
 
 document.addEventListener('keydown',event=>{
-    if(event.keyCode==37){
-        playerMove(-1);
-    }else if(event.keyCode==39){
-        playerMove(1);
-    }else if(event.keyCode==40){
-        playerDrop();
-    }else if(event.keyCode==81){
-        playerRotate(-1);
-    }else if(event.keyCode==87){
-        playerRotate(1);
+    if(player.game_state==1){
+        if(event.keyCode==37){
+            playerMove(-1);
+        }else if(event.keyCode==39){
+            playerMove(1);
+        }else if(event.keyCode==40){
+            playerDrop();
+        }else if(event.keyCode==81){
+            playerRotate(-1);
+        }else if(event.keyCode==87){
+            playerRotate(1);
+        }
     }
 });
 
@@ -241,6 +256,34 @@ function arenaSweep(){
 
 function updateScore(){
     document.getElementById("score").innerText  = player.score;
+}
+
+const button = document.getElementById("button");
+var game_state=0;
+
+function gameChange(){
+    if(player.game_state==0 || player.game_state==4 ){
+
+        player.score = 0;
+        updateScore();
+        player.game_state=1
+        arena.forEach(row=>row.fill(0));
+        button.classList.remove("btn-success");
+        button.classList.add("btn-primary");
+        button.innerText="Pause";
+    }else if(player.game_state==1){
+        player.game_state=2;
+
+        button.classList.add("btn-success");
+        button.classList.remove("btn-primary");
+        button.innerText="Continue";
+    }else if(player.game_state==2){
+        player.game_state=1;
+
+        button.classList.remove("btn-success");
+        button.classList.add("btn-primary");
+        button.innerText="Pause";
+    }
 }
 
 playerReset();

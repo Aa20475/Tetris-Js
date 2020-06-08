@@ -1,11 +1,38 @@
 <html>
     <head>
         <title>Tetris</title>
+        <link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="styles.css">
     </head>
     <body>
-        
-        <div id="score"></div>
-        <canvas id="tetris" width="240" height="400"></canvas>
+        <div class="container">
+            <div class="row ">
+                <div class="col col-md-6">
+                    <div class="row">
+                        <div class="col-12">
+                            <h1>Tetris!</h1>
+                        </div>
+                        <div class="col-12">
+
+                            <h3><strong>Score:</strong></h3>
+                            <h3 id="score"></h3>
+                            <button class="btn btn-success" id="button" onClick="gameChange()">Start</button>
+                        </div>
+                        <div class="col-12">
+                            <strong><h4 id="game"></h4></strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="col col-md-6">
+                    <canvas id="tetris" width="240" height="400"></canvas>
+                </div>
+            </div>
+        </div>
+
+
         <script src="tetris.js"></script>
+        <script src="node_modules/jquery/dist/jquery.min.js"></script>
+        <script src="node_modules/popper.js/dist/popper.min.js"></script>
+        <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
     </body>
 </html>
